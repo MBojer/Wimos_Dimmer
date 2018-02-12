@@ -4,11 +4,15 @@ const char* ssid = "NoInternetHere";
 // const char* ssid = "NoInternetHereEither";
 const char* password = "NoPassword1!";
 
-const int Dimmer_Pin = D0;  // the onboard LED
+const int Dimmer_1 = 5;
+const int Dimmer_2 = 4;
+const int Dimmer_3 = 14;
+const int Dimmer_4 = 12;
+const int Dimmer_5 = 13;
 
 unsigned int Light_Strength = 0;
 
-byte Light_Strength_Procent = 0;
+unsigned int Light_Strength_Procent = 0;
 
 
 byte Fade_Jump = 25;
@@ -88,7 +92,20 @@ void setup() {
   Serial.println();
 
   pinMode(BUILTIN_LED, OUTPUT);
-  pinMode(Dimmer_Pin, OUTPUT);
+  pinMode(Dimmer_1, OUTPUT);
+  pinMode(Dimmer_2, OUTPUT);
+  pinMode(Dimmer_3, OUTPUT);
+  pinMode(Dimmer_4, OUTPUT);
+  pinMode(Dimmer_5, OUTPUT);
+
+
+  analogWrite(Dimmer_1, 0);
+  analogWrite(Dimmer_2, 0);
+  analogWrite(Dimmer_3, 0);
+  analogWrite(Dimmer_4, 0);
+  analogWrite(Dimmer_5, 0);
+
+
 
   WiFi_Check();
 
@@ -123,23 +140,60 @@ void loop() {
 
   // remove "/light" and set light based on % number in get requist
 
-  if (request.indexOf("GET /Light_") != -1) {
+  if (request.indexOf("GET /Dimmer_") != -1) {
 
-    request.replace("GET /Light_", "");
-    request.replace("/ HTTP/1.1", "");
+    request.replace("GET /", "");
+    request.replace(" HTTP/1.1", "");
 
-    Light_Strength_Procent = request.toInt();
+    // don't remove "Dimmer_" and make define statements matching dimmer_1 to something then use them to set pinf numbers, not possible it seems
 
-    Light_Strength = (Light_Strength_Procent * 0.01) * 255;
+    String Selected_Dimmer = request.substring(0, request.indexOf("-"));
 
+    Light_Strength_Procent = request.substring(request.indexOf("-") + 1, request.length()).toInt();
+
+    Light_Strength = (Light_Strength_Procent * 0.01) * 1023;
+    Serial.print("Light_Strength: ");
+    Serial.println(Light_Strength);
+
+    if (Selected_Dimmer == "Dimmer_1") {
+      Serial.println("MARKER 1");
+      analogWrite(Dimmer_1, Light_Strength);
+    }
+    else if (Selected_Dimmer == "Dimmer_2") {
+      Serial.println("MARKER 2");
+      analogWrite(Dimmer_2, Light_Strength);
+    }
+    else if (Selected_Dimmer == "Dimmer_3") {
+      Serial.println("MARKER 3");
+      analogWrite(Dimmer_3, Light_Strength);
+    }
+    else if (Selected_Dimmer == "Dimmer_4") {
+      analogWrite(Dimmer_4, Light_Strength);
+    }
+    else if (Selected_Dimmer == "Dimmer_5") {
+      analogWrite(Dimmer_5, Light_Strength);
+    }
+
+
+
+
+
+    // while (true) delay(15000);
+
+    // Serial.println(request);
+    // Light_Strength = request;
+    // Light_Strength_Procent = request.toInt();
+
+    // Light_Strength = (Light_Strength_Procent * 0.01) * 255;
+
+    // analogWrite(BUILTIN_LED, Light_Strength);
+    // analogWrite(Dimmer_Pin, Light_Strength);
+    // Serial.print("Light_Strength: ");
+    // Serial.println(Light_Strength);
   }
 
 
 
-  analogWrite(BUILTIN_LED, Light_Strength);
-  analogWrite(Dimmer_Pin, Light_Strength);
-  Serial.print("Light_Strength: ");
-  Serial.println(Light_Strength);
 
 
 
@@ -155,7 +209,7 @@ void loop() {
   client.println("Current light strength: ");
 
 
-  if (Light_Strength == 1023) {
+  if (Light_Strength == 0) {
     client.print("0 procent");
   }
   else if (Light_Strength == 767) {
@@ -167,7 +221,7 @@ void loop() {
   else if (Light_Strength == 255) {
     client.print("75 procent");
   }
-  else if (Light_Strength == 0) {
+  else if (Light_Strength == 255) {
     client.print("100 procent");
   }
 

@@ -1,12 +1,22 @@
 #include <ESP8266WiFi.h>
 
-// const char* ssid = "NoInternetHere";
-const char* ssid = "NoInternetHereEither";
+const char* ssid = "NoInternetHere";
+// const char* ssid = "NoInternetHereEither";
 const char* password = "NoPassword1!";
 
-const int Dimmer_Pin = D0;  // the onboard LED
+const int Dimmer_1 = D1;
+const int Dimmer_2 = D2;
+const int Dimmer_3 = D3;
+const int Dimmer_4 = D4;
+const int Dimmer_5 = D5;
+const int Dimmer_6 = D6;
+const int Dimmer_7 = D7;
+const int Dimmer_8 = D8;
 
 unsigned int Light_Strength = 0;
+
+unsigned int Light_Strength_Procent = 0;
+
 
 byte Fade_Jump = 25;
 
@@ -72,6 +82,7 @@ void WiFi_Check() {
 
   if (WiFi_Connected == false) {
     WiFi_Connect();
+    Start_Web_Server();
   }
 
 }
@@ -84,7 +95,17 @@ void setup() {
   Serial.println();
 
   pinMode(BUILTIN_LED, OUTPUT);
-  pinMode(Dimmer_Pin, OUTPUT);
+  pinMode(Dimmer_1, OUTPUT);
+  pinMode(Dimmer_2, OUTPUT);
+  pinMode(Dimmer_3, OUTPUT);
+  pinMode(Dimmer_4, OUTPUT);
+  pinMode(Dimmer_5, OUTPUT);
+  pinMode(Dimmer_6, OUTPUT);
+  pinMode(Dimmer_7, OUTPUT);
+  pinMode(Dimmer_8, OUTPUT);
+
+
+
 
   WiFi_Check();
 
@@ -117,28 +138,61 @@ void loop() {
 
   // Match the request
 
-  if (request.indexOf("/Light=0") != -1) {
-    Light_Strength = 1023;
-  }
-  else if (request.indexOf("/Light=25") != -1){
-    Light_Strength = 767;
-  }
-  else if (request.indexOf("/Light=50") != -1){
-    Light_Strength = 512;
-  }
-  else if (request.indexOf("/Light=75") != -1){
-    Light_Strength = 255;
-  }
-  else if (request.indexOf("/Light=100") != -1){
-    Light_Strength = 0;
+  // remove "/light" and set light based on % number in get requist
+
+  if (request.indexOf("GET /Dimmer_") != -1) {
+
+    request.replace("GET /", "");
+    request.replace(" HTTP/1.1", "");
+
+    // don't remove "Dimmer_" and make define statements matching dimmer_1 to something then use them to set pinf numbers
+
+    String Test = request.substring(0, request.indexOf("-"));
+
+    Test.replace("immer_", "");
+
+    Serial.print("Test: ");
+    Serial.println(Test);
+
+    const int Test2 = Test.toInt();
+
+    Serial.print("Dimmer_1: ");
+    Serial.println(Dimmer_1);
+    Serial.println("delay");
+
+    while (true) delay(15000);
+
+//    immer_
+
+
+
+    const int Dimmer = request.substring(0, request.indexOf("-")).toInt();
+    Serial.print("Dimmer: ");
+    Serial.println(Dimmer);
+
+    Light_Strength_Procent = request.substring(request.indexOf("-") + 1, request.length()).toInt();
+    Serial.print("Light_Strength_Procent: ");
+    Serial.println(Light_Strength_Procent);
+
+    Light_Strength = (Light_Strength_Procent * 0.01) * 255;
+
+    analogWrite(Dimmer, Light_Strength);
+
+
+    // Serial.println(request);
+    // Light_Strength = request;
+    // Light_Strength_Procent = request.toInt();
+
+    // Light_Strength = (Light_Strength_Procent * 0.01) * 255;
+
+    // analogWrite(BUILTIN_LED, Light_Strength);
+    // analogWrite(Dimmer_Pin, Light_Strength);
+    // Serial.print("Light_Strength: ");
+    // Serial.println(Light_Strength);
   }
 
 
 
-  analogWrite(BUILTIN_LED, Light_Strength);
-  analogWrite(Dimmer_Pin, Light_Strength - 1023);
-  Serial.print("Light_Strength: ");
-  Serial.println(Light_Strength);
 
 
 
@@ -154,7 +208,7 @@ void loop() {
   client.println("Current light strength: ");
 
 
-  if (Light_Strength == 1023) {
+  if (Light_Strength == 0) {
     client.print("0 procent");
   }
   else if (Light_Strength == 767) {
@@ -166,7 +220,7 @@ void loop() {
   else if (Light_Strength == 255) {
     client.print("75 procent");
   }
-  else if (Light_Strength == 0) {
+  else if (Light_Strength == 255) {
     client.print("100 procent");
   }
 

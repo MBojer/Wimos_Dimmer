@@ -156,22 +156,37 @@ void loop() {
     Serial.println(Light_Strength);
 
     if (Selected_Dimmer == "Dimmer_1") {
-      Serial.println("MARKER 1");
       analogWrite(Dimmer_1, Light_Strength);
+      Serial.print("Dimmer 1: ");
+      Serial.println(Light_Strength);
     }
     else if (Selected_Dimmer == "Dimmer_2") {
-      Serial.println("MARKER 2");
       analogWrite(Dimmer_2, Light_Strength);
+      Serial.print("Dimmer 2: ");
+      Serial.println(Light_Strength);
     }
     else if (Selected_Dimmer == "Dimmer_3") {
-      Serial.println("MARKER 3");
       analogWrite(Dimmer_3, Light_Strength);
+      Serial.print("Dimmer 3: ");
+      Serial.println(Light_Strength);
     }
     else if (Selected_Dimmer == "Dimmer_4") {
       analogWrite(Dimmer_4, Light_Strength);
+      Serial.print("Dimmer 4: ");
+      Serial.println(Light_Strength);
     }
     else if (Selected_Dimmer == "Dimmer_5") {
       analogWrite(Dimmer_5, Light_Strength);
+      Serial.print("Dimmer 5: ");
+      Serial.println(Light_Strength);
+    }
+    else if (Selected_Dimmer == "Dimmer_99") {
+      analogWrite(Dimmer_1, 0);
+      analogWrite(Dimmer_2, 0);
+      analogWrite(Dimmer_3, 0);
+      analogWrite(Dimmer_4, 0);
+      analogWrite(Dimmer_5, 0);
+      Serial.println("All OFF");
     }
 
 

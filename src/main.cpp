@@ -14,6 +14,12 @@ unsigned int Light_Strength = 0;
 
 unsigned int Light_Strength_Procent = 0;
 
+byte Strenght_Dimmer_1 = 0;
+byte Strenght_Dimmer_2 = 0;
+byte Strenght_Dimmer_3 = 0;
+byte Strenght_Dimmer_4 = 0;
+byte Strenght_Dimmer_5 = 0;
+
 
 byte Fade_Jump = 25;
 
@@ -157,60 +163,50 @@ void loop() {
 
     if (Selected_Dimmer == "Dimmer_1") {
       analogWrite(Dimmer_1, Light_Strength);
+      Strenght_Dimmer_1 = Light_Strength_Procent;
       Serial.print("Dimmer 1: ");
       Serial.println(Light_Strength);
     }
     else if (Selected_Dimmer == "Dimmer_2") {
       analogWrite(Dimmer_2, Light_Strength);
+      Strenght_Dimmer_2 = Light_Strength_Procent;
       Serial.print("Dimmer 2: ");
       Serial.println(Light_Strength);
     }
     else if (Selected_Dimmer == "Dimmer_3") {
       analogWrite(Dimmer_3, Light_Strength);
+      Strenght_Dimmer_3 = Light_Strength_Procent;
       Serial.print("Dimmer 3: ");
       Serial.println(Light_Strength);
     }
     else if (Selected_Dimmer == "Dimmer_4") {
       analogWrite(Dimmer_4, Light_Strength);
+      Strenght_Dimmer_4 = Light_Strength_Procent;
       Serial.print("Dimmer 4: ");
       Serial.println(Light_Strength);
     }
     else if (Selected_Dimmer == "Dimmer_5") {
       analogWrite(Dimmer_5, Light_Strength);
+      Strenght_Dimmer_5 = Light_Strength_Procent;
       Serial.print("Dimmer 5: ");
       Serial.println(Light_Strength);
     }
     else if (Selected_Dimmer == "Dimmer_99") {
       analogWrite(Dimmer_1, 0);
+      Strenght_Dimmer_1 = 0;
       analogWrite(Dimmer_2, 0);
+      Strenght_Dimmer_2 = 0;
       analogWrite(Dimmer_3, 0);
+      Strenght_Dimmer_3 = 0;
       analogWrite(Dimmer_4, 0);
+      Strenght_Dimmer_4 = 0;
       analogWrite(Dimmer_5, 0);
+      Strenght_Dimmer_5 = 0;
       Serial.println("All OFF");
     }
-
-
-
-
-
-    // while (true) delay(15000);
-
-    // Serial.println(request);
-    // Light_Strength = request;
-    // Light_Strength_Procent = request.toInt();
-
-    // Light_Strength = (Light_Strength_Procent * 0.01) * 255;
-
-    // analogWrite(BUILTIN_LED, Light_Strength);
-    // analogWrite(Dimmer_Pin, Light_Strength);
-    // Serial.print("Light_Strength: ");
-    // Serial.println(Light_Strength);
   }
 
-
-
-
-
+  else Serial.println(request);
 
   // Return the response
   client.println("HTTP/1.1 200 OK");
@@ -219,38 +215,58 @@ void loop() {
   client.println("<!DOCTYPE HTML>");
   client.println("<html>");
 
-  client.println("");
-
-  client.println("Current light strength: ");
-
-
-  if (Light_Strength == 0) {
-    client.print("0 procent");
-  }
-  else if (Light_Strength == 767) {
-    client.print("25 procent");
-  }
-  else if (Light_Strength == 512) {
-    client.print("50 procent");
-  }
-  else if (Light_Strength == 255) {
-    client.print("75 procent");
-  }
-  else if (Light_Strength == 255) {
-    client.print("100 procent");
-  }
-
-
+  client.println("Wemos Dimmer v2.0");
   client.println("<br><br>");
-  client.println("<a href=\"/Light=0\">Change light strenght to: 0 procent");
-  client.println("<br><br>");
-  client.println("<a href=\"/Light=25\">Change light strenght to: 25 procent");
-  client.println("<br><br>");
-  client.println("<a href=\"/Light=50\">Change light strenght to: 50 procent");
-  client.println("<br><br>");
-  client.println("<a href=\"/Light=75\">Change light strenght to: 75 procent");
-  client.println("<br><br>");
-  client.println("<a href=\"/Light=100\">Change light strenght to: 100 procent");
+
+  client.print("Dimmer 1: ");
+  client.print(Strenght_Dimmer_1);
+  client.println("&#37<br>");
+
+  client.print("Dimmer 2: ");
+  client.print(Strenght_Dimmer_2);
+  client.println("&#37<br>");
+
+  client.print("Dimmer 3: ");
+  client.print(Strenght_Dimmer_3);
+  client.println("&#37<br>");
+
+  client.print("Dimmer 4: ");
+  client.print(Strenght_Dimmer_4);
+  client.println("&#37<br>");
+
+  client.print("Dimmer 5: ");
+  client.print(Strenght_Dimmer_5);
+  client.println("&#37<br>");
+
+  //
+  //
+  // if (Light_Strength == 0) {
+  //   client.print("0 procent");
+  // }
+  // else if (Light_Strength == 767) {
+  //   client.print("25 procent");
+  // }
+  // else if (Light_Strength == 512) {
+  //   client.print("50 procent");
+  // }
+  // else if (Light_Strength == 255) {
+  //   client.print("75 procent");
+  // }
+  // else if (Light_Strength == 255) {
+  //   client.print("100 procent");
+  // }
+  //
+  //
+  // client.println("<br><br>");
+  // client.println("<a href=\"/Light=0\">Change light strenght to: 0 procent");
+  // client.println("<br><br>");
+  // client.println("<a href=\"/Light=25\">Change light strenght to: 25 procent");
+  // client.println("<br><br>");
+  // client.println("<a href=\"/Light=50\">Change light strenght to: 50 procent");
+  // client.println("<br><br>");
+  // client.println("<a href=\"/Light=75\">Change light strenght to: 75 procent");
+  // client.println("<br><br>");
+  // client.println("<a href=\"/Light=100\">Change light strenght to: 100 procent");
   client.println("</html>");
 
   delay(1);

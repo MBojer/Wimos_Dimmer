@@ -40,6 +40,11 @@ void Start_Web_Server() {
   Serial.println("/");
 }
 
+void i2c_Test() {
+
+  Serial.println("MARKER");
+
+} // i2c_Test
 
 
 void WiFi_Connect() {
@@ -206,6 +211,10 @@ void loop() {
     }
   }
 
+  else if (request.indexOf("GET /i2c") != -1) {
+    i2c_Test();
+  }
+
   else Serial.println(request);
 
   // Return the response
@@ -238,6 +247,10 @@ void loop() {
   client.print(Strenght_Dimmer_5);
   client.println("&#37<br>");
 
+  client.println("<br><br>");
+  client.println("<a href=\"/i2c\">i2c Test");
+
+
   //
   //
   // if (Light_Strength == 0) {
@@ -257,8 +270,6 @@ void loop() {
   // }
   //
   //
-  // client.println("<br><br>");
-  // client.println("<a href=\"/Light=0\">Change light strenght to: 0 procent");
   // client.println("<br><br>");
   // client.println("<a href=\"/Light=25\">Change light strenght to: 25 procent");
   // client.println("<br><br>");
